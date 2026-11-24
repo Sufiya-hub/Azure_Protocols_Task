@@ -1,0 +1,92 @@
+[
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "1",
+    "ProcessId": 1,
+    "ConversationJson": "{\"0\":\"The weather looks clear this morning.\",\"1\":\"Will rain arrive later today?\",\"2\":\"The forecast shows light evening showers.\",\"3\":\"Please carry an umbrella just in case.\",\"4\":\"Temperatures should remain comfortable throughout today.\",\"5\":\"I have another question about weather today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "2",
+    "ProcessId": 2,
+    "ConversationJson": "{\"0\":\"I would like some fresh vegetables.\",\"1\":\"Which dish should we prepare tonight?\",\"2\":\"A simple meal sounds good today.\",\"3\":\"Please add tomatoes and green peas.\",\"4\":\"We can cook everything after work.\",\"5\":\"I have another question about food today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "3",
+    "ProcessId": 3,
+    "ConversationJson": "{\"0\":\"I need help planning tomorrow's journey.\",\"1\":\"Which train leaves early in morning?\",\"2\":\"The express service has available seats.\",\"3\":\"Please check the departure platform number.\",\"4\":\"The ticket details are ready now.\",\"5\":\"I have another question about travel today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "4",
+    "ProcessId": 4,
+    "ConversationJson": "{\"0\":\"I need a replacement phone charger.\",\"1\":\"Which model supports fast charging properly?\",\"2\":\"This charger matches your device specifications.\",\"3\":\"Please confirm the delivery address once.\",\"4\":\"Your order is ready for confirmation.\",\"5\":\"I have another question about shopping today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "5",
+    "ProcessId": 5,
+    "ConversationJson": "{\"0\":\"I want to revise Python basics.\",\"1\":\"Which topic should I practise first?\",\"2\":\"Start with variables and simple data types.\",\"3\":\"Then practise loops and conditional statements.\",\"4\":\"I will review your answers afterwards.\",\"5\":\"I have another question about study today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "6",
+    "ProcessId": 6,
+    "ConversationJson": "{\"0\":\"The project update is ready now.\",\"1\":\"Please review the latest task status.\",\"2\":\"Two items still need your attention.\",\"3\":\"I will complete them before lunch.\",\"4\":\"The updated report will follow shortly.\",\"5\":\"I have another question about work today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "7",
+    "ProcessId": 7,
+    "ConversationJson": "{\"0\":\"I enjoy listening to calm music.\",\"1\":\"Which playlist should I try today?\",\"2\":\"The acoustic collection has relaxing songs.\",\"3\":\"Please share your favourite track too.\",\"4\":\"We can create a shared playlist.\",\"5\":\"I have another question about music today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "8",
+    "ProcessId": 8,
+    "ConversationJson": "{\"0\":\"I plan to walk this evening.\",\"1\":\"How long should today's walk last?\",\"2\":\"Thirty minutes is a reasonable starting point.\",\"3\":\"Remember to drink water before leaving.\",\"4\":\"Track your distance after returning home.\",\"5\":\"I have another question about fitness today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "9",
+    "ProcessId": 9,
+    "ConversationJson": "{\"0\":\"My laptop feels slow during startup.\",\"1\":\"Have you checked the available storage?\",\"2\":\"Several temporary files can be removed.\",\"3\":\"Please restart after clearing those files.\",\"4\":\"The system should respond more smoothly.\",\"5\":\"I have another question about technology today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "10",
+    "ProcessId": 10,
+    "ConversationJson": "{\"0\":\"I have a mild headache today.\",\"1\":\"Did you get enough sleep yesterday?\",\"2\":\"Try resting in a quiet room.\",\"3\":\"Drink water and avoid bright screens.\",\"4\":\"Seek medical help if symptoms worsen.\",\"5\":\"I have another question about health today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "11",
+    "ProcessId": 11,
+    "ConversationJson": "{\"0\":\"Our team has practice this evening.\",\"1\":\"Please confirm the ground location first.\",\"2\":\"Practice begins at six thirty sharp.\",\"3\":\"Bring your shoes and water bottle.\",\"4\":\"The coach will explain today's drills.\",\"5\":\"I have another question about sports today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "12",
+    "ProcessId": 12,
+    "ConversationJson": "{\"0\":\"I need to review monthly expenses.\",\"1\":\"Please group spending by category first.\",\"2\":\"Food and travel costs increased slightly.\",\"3\":\"We should compare last month's totals.\",\"4\":\"The budget summary is ready now.\",\"5\":\"I have another question about finance today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "13",
+    "ProcessId": 13,
+    "ConversationJson": "{\"0\":\"The kitchen tap needs some attention.\",\"1\":\"Water pressure seems lower than usual.\",\"2\":\"Please check the valve connection carefully.\",\"3\":\"The washer may need cleaning too.\",\"4\":\"We can test the flow afterwards.\",\"5\":\"I have another question about home today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "14",
+    "ProcessId": 14,
+    "ConversationJson": "{\"0\":\"The meeting is planned for Friday.\",\"1\":\"Please confirm everyone's available time slots.\",\"2\":\"The afternoon option suits most participants.\",\"3\":\"I will send the calendar invitation.\",\"4\":\"The meeting details are now shared.\",\"5\":\"I have another question about events today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  },
+  {
+    "PartitionKey": "PROCESSES",
+    "RowKey": "15",
+    "ProcessId": 15,
+    "ConversationJson": "{\"0\":\"Hello, I need some quick assistance.\",\"1\":\"Sure, please explain what you need.\",\"2\":\"I will check the details carefully.\",\"3\":\"The information has been reviewed successfully.\",\"4\":\"Let me know if anything changes.\",\"5\":\"I have another question about general today.\",\"6\":\"Please share the details when available.\",\"7\":\"That information helps me understand the situation.\",\"8\":\"Can you check this once more?\",\"9\":\"The latest update is available now.\",\"10\":\"Everything looks correct from my side.\",\"11\":\"Please continue with the remaining requested steps.\",\"12\":\"The requested information has been collected successfully.\",\"13\":\"No further details are needed at present.\",\"14\":\"This conversation is complete; thank you for helping.\",\"15\":\"Goodbye, the conversation is now officially closed.\"}"
+  }
+]
