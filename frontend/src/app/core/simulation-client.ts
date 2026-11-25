@@ -40,9 +40,12 @@ export class SimulationProtocolClient implements ProtocolClient {
     this.open.delete(protocol);
   }
 
-  async exchange(req: ExchangeRequest, sink: FlowSink, signal: AbortSignal): Promise<ExchangeResult> {
-    const info = protocolInfo(req.protocol);
-    const conversation = await this.conversations.get(info.table, req.processId);
+  async exchange(input: ExchangeRequest, sink: FlowSink, signal: AbortSignal): Promise<ExchangeResult> {
+    const info = protocolInfo(input.protocol);
+    // Same rule as Function A: no ProcessId -> pick rand(0, 15)
+    const processId = input.processId ?? Math.floor(Math.random() * 16);
+    const conversation = await this.conversations.get(info.table, processId);
+    const req = { ...input, processId, message: input.message || conversation[(input.exchangeNo - 1) * 2] };
     const aIndex = (req.exchangeNo - 1) * 2;
     const bIndex = aIndex + 1;
     const reply = conversation[bIndex];
@@ -65,6 +68,8 @@ export class SimulationProtocolClient implements ProtocolClient {
     };
 
     const wait = (ms: number) => sleep(ms, signal);
+    if (input.processId === null) sink.log('A', `Picked ProcessId ${processId} with rand(0,15)`);
+    sink.picked(processId, req.message);
     const ctx: Ctx = { req, sink, wait, reply, closed, requestPayload };
 
     switch (req.protocol) {
@@ -81,7 +86,7 @@ export class SimulationProtocolClient implements ProtocolClient {
         await this.websocket(ctx);
         break;
     }
-    return { reply, replyPayload, closed };
+    return { processId, reply, replyPayload, closed };
   }
 
   /** Short/long polling and SSE: A delivers its message with a plain HTTP POST. */
@@ -213,7 +218,7 @@ export class SimulationProtocolClient implements ProtocolClient {
 }
 
 interface Ctx {
-  req: ExchangeRequest;
+  req: ExchangeRequest & { processId: number };
   sink: FlowSink;
   wait: (ms: number) => Promise<void>;
   reply: string;

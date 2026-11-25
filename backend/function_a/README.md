@@ -57,5 +57,6 @@ Invoke-RestMethod http://localhost:7071/api/websocket/run -Method Post -ContentT
   -Body '{"processId":3,"exchangeNo":1,"count":8}'
 ```
 
-Body fields: `processId` 0–15, `exchangeNo` 1–8, `count` (exchanges on the same connection, default 1),
+Body fields: `processId` 0–15 (**optional: leave it out and Function A picks `rand(0,15)`**;
+the response's `processId` / `processIdSource: "random"` says which one), `exchangeNo` 1–8, `count` (exchanges on the same connection, default 1),
 `message` (optional custom text, only when `count` is 1), `mode` (`short`/`long`, polling only).

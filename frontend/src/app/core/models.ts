@@ -42,12 +42,16 @@ export const emptyStats = (): RunStats => ({
 
 export interface ExchangeRequest {
   protocol: Protocol;
-  processId: number;
+  /** null = let Function A pick rand(0, 15) */
+  processId: number | null;
   exchangeNo: number;
+  /** empty = use Function A's own message for this exchange */
   message: string;
 }
 
 export interface ExchangeResult {
+  /** the ProcessId actually used (picked by Function A when the request had none) */
+  processId: number;
   reply: string;
   replyPayload: object;
   /** true when the closing exchange (messages 14 and 15) has completed */
@@ -74,4 +78,6 @@ export interface FlowSink {
   response(payload: object): void;
   state(state: ConnState): void;
   count(field: CountField): void;
+  /** Function A has chosen the process (rand or fixed) and the message it is sending, known even if B then fails */
+  picked(processId: number, message: string): void;
 }

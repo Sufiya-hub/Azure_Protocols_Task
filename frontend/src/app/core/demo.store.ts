@@ -28,7 +28,10 @@ export class DemoStore {
   }
 
   readonly protocol = signal<Protocol>('websocket');
-  readonly processId = signal(0);
+  /** 'random' = Function A picks rand(0,15) when the conversation starts */
+  readonly processId = signal<number | 'random'>('random');
+  /** ProcessId actually in use for the current conversation (set after Function A picks it) */
+  readonly activeProcessId = signal<number | null>(null);
   readonly exchangeNo = signal(1);
   readonly message = signal('');
 
@@ -45,7 +48,11 @@ export class DemoStore {
 
   readonly info = computed(() => protocolInfo(this.protocol()));
   readonly connectionOpen = computed(() => this.info().persistent && this.connState() === 'connected');
-  readonly canRun = computed(() => !this.running() && !this.closed() && this.message().trim().length > 0);
+  /** Random mode before the first run: the process (and so the message) is not known yet. */
+  readonly awaitingRandomPick = computed(() => this.processId() === 'random' && this.activeProcessId() === null);
+  readonly canRun = computed(
+    () => !this.running() && !this.closed() && (this.awaitingRandomPick() || this.message().trim().length > 0),
+  );
 
   constructor() {
     if (this.mode() === 'live') void this.checkHealth();
@@ -100,11 +107,10 @@ export class DemoStore {
     void this.prefill();
   }
 
-  selectProcess(id: number) {
+  selectProcess(id: number | 'random') {
     if (this.running()) return;
-    this.reset();
     this.processId.set(id);
-    void this.prefill();
+    this.reset();
   }
 
   setExchange(n: number) {
@@ -112,10 +118,6 @@ export class DemoStore {
     this.exchangeNo.set(Math.min(EXCHANGES, Math.max(1, Math.round(n))));
     this.closed.set(false);
     void this.prefill();
-  }
-
-  randomExchange() {
-    this.setExchange(1 + Math.floor(Math.random() * EXCHANGES));
   }
 
   setMessage(text: string) {
@@ -137,6 +139,8 @@ export class DemoStore {
     this.error.set(null);
     this.stepNo = 0;
     this.exchangeNo.set(1);
+    const fixed = this.processId();
+    this.activeProcessId.set(fixed === 'random' ? null : fixed); // random: a new rand(0,15) on the next run
     void this.prefill();
   }
 
@@ -159,15 +163,26 @@ export class DemoStore {
       response: (p) => live() && this.responsePayload.set(p),
       state: (s) => live() && this.connState.set(s),
       count: (f) => live() && this.stats.update((st) => ({ ...st, [f]: st[f] + 1 })),
+      picked: (pid, text) => {
+        if (!live()) return;
+        this.activeProcessId.set(pid); // retries and later exchanges stay on this process until Reset
+        this.message.set(text);
+      },
     };
 
     try {
       const result = await this.client.exchange(
-        { protocol, processId: this.processId(), exchangeNo: this.exchangeNo(), message: this.message().trim() },
+        {
+          protocol,
+          processId: this.activeProcessId(), // null -> Function A picks rand(0,15)
+          exchangeNo: this.exchangeNo(),
+          message: this.awaitingRandomPick() ? '' : this.message().trim(),
+        },
         sink,
         ctrl.signal,
       );
       if (!live()) return;
+      this.activeProcessId.set(result.processId); // keep this process for the rest of the conversation
       this.responsePayload.set(result.replyPayload);
       if (result.stats) this.stats.set(result.stats);
       else this.stats.update((st) => ({ ...st, replyMs: Math.round(performance.now() - started) }));
@@ -192,15 +207,19 @@ export class DemoStore {
   /** Put Function A's scripted line for the current exchange into the message box. */
   private async prefill() {
     const table = this.info().table;
-    const id = this.processId();
+    const id = this.activeProcessId();
     const n = this.exchangeNo();
     const mode = this.mode();
+    if (id === null) {
+      this.message.set(''); // random mode: unknown until Function A picks the process
+      return;
+    }
     try {
       const conversation =
         mode === 'live'
           ? await this.conversations.getFromFunctionA(table, id)
           : await this.conversations.get(table, id);
-      if (table === this.info().table && id === this.processId() && n === this.exchangeNo() && mode === this.mode()) {
+      if (table === this.info().table && id === this.activeProcessId() && n === this.exchangeNo() && mode === this.mode()) {
         this.message.set(conversation[(n - 1) * 2]);
         if (this.prefillError && this.error() === this.prefillError) this.error.set(null);
         this.prefillError = null;

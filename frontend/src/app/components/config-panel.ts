@@ -43,7 +43,8 @@ import { Icon } from './icon';
           <div>
             <label class="field-label" for="process">Process ID</label>
             <select id="process" class="input" [disabled]="store.running()"
-                    (change)="store.selectProcess(+$any($event.target).value)">
+                    (change)="onProcess($any($event.target).value)">
+              <option value="random" [selected]="store.processId() === 'random'">Random · rand(0–15)</option>
               @for (id of processIds; track id) {
                 <option [value]="id" [selected]="id === store.processId()">{{ label(id) }}</option>
               }
@@ -51,18 +52,22 @@ import { Icon } from './icon';
           </div>
           <div>
             <label class="field-label" for="exchange">Exchange (1–{{ exchanges }})</label>
-            <div class="flex gap-1.5">
-              <input id="exchange" type="number" min="1" [max]="exchanges" class="input min-w-0"
-                     [value]="store.exchangeNo()" [disabled]="store.running()"
-                     (change)="store.setExchange(+$any($event.target).value)" />
-              <button type="button" class="btn btn-secondary px-2.5" title="Random exchange"
-                      [disabled]="store.running()" (click)="store.randomExchange()">
-                <app-icon name="sparkles" cls="size-4" />
-                <span class="sr-only">Random exchange</span>
-              </button>
-            </div>
+            <input id="exchange" type="number" min="1" [max]="exchanges" class="input"
+                   [value]="store.exchangeNo()" [disabled]="store.running()"
+                   (change)="store.setExchange(+$any($event.target).value)" />
           </div>
         </div>
+        @if (store.processId() === 'random') {
+          <p class="-mt-3 rounded-lg px-3 py-2 text-xs"
+             [class]="store.activeProcessId() === null ? 'bg-amber-50 text-amber-800' : 'bg-blue-50 text-blue-800'">
+            @if (store.activeProcessId() === null) {
+              Function A will pick the ProcessId with <b>rand(0,15)</b> when you press Run.
+            } @else {
+              Function A picked <b>{{ label(store.activeProcessId()!) }}</b> with rand(0,15). Retries and the next
+              exchanges stay on this process. Press <b>Reset</b> to let Function A pick again.
+            }
+          </p>
+        }
         <p class="-mt-3 text-xs text-slate-500">
           A sends message #{{ (store.exchangeNo() - 1) * 2 }}, B replies with #{{ (store.exchangeNo() - 1) * 2 + 1 }}
           from the <span class="font-medium text-slate-700">{{ store.info().table }}</span> table.
@@ -73,7 +78,8 @@ import { Icon } from './icon';
         <div>
           <label class="field-label" for="message">Function A message</label>
           <textarea id="message" rows="3" class="input resize-y"
-                    [value]="store.message()" [disabled]="store.running()"
+                    [value]="store.message()" [disabled]="store.running() || store.awaitingRandomPick()"
+                    [placeholder]="store.awaitingRandomPick() ? 'Function A picks the process first, then sends message #0 of that process.' : ''"
                     (input)="store.setMessage($any($event.target).value)"></textarea>
         </div>
 
@@ -117,4 +123,8 @@ export class ConfigPanel {
   protected readonly processIds = PROCESS_IDS;
   protected readonly exchanges = EXCHANGES;
   protected readonly label = processLabel;
+
+  protected onProcess(value: string) {
+    this.store.selectProcess(value === 'random' ? 'random' : Number(value));
+  }
 }

@@ -15,6 +15,8 @@ interface BackendStep {
 
 interface BackendRun {
   protocol: string;
+  processId: number;
+  processIdSource: 'random' | 'request';
   closed: boolean;
   exchanges: { exchangeNo: number; request: object; reply: (object & { message?: string }) | null }[];
   steps: BackendStep[];
@@ -47,10 +49,10 @@ export class LiveProtocolClient implements ProtocolClient {
   async exchange(req: ExchangeRequest, sink: FlowSink, signal: AbortSignal): Promise<ExchangeResult> {
     const endpoint = ENDPOINTS[req.protocol];
     const body = {
-      processId: req.processId,
+      ...(req.processId !== null ? { processId: req.processId } : {}), // omitted -> Function A picks rand(0,15)
       exchangeNo: req.exchangeNo,
       count: 1,
-      message: req.message,
+      ...(req.message ? { message: req.message } : {}),
       ...(endpoint.mode ? { mode: endpoint.mode } : {}),
     };
 
@@ -69,6 +71,12 @@ export class LiveProtocolClient implements ProtocolClient {
     }
 
     const run = await this.parse(res);
+    const sent = run.exchanges[0]?.request as { message?: string } | undefined;
+    if (sent?.message) sink.picked(run.processId, sent.message); // known even when Function B failed
+    if (run.processIdSource === 'random') {
+      const first = run.steps[0]?.time ? new Date(run.steps[0].time) : undefined;
+      sink.log('A', `Picked ProcessId ${run.processId} with rand(0,15)`, false, first);
+    }
     const persistent = req.protocol === 'sse' || req.protocol === 'websocket';
     if (persistent && run.steps.length) sink.state('connected');
 
@@ -87,9 +95,11 @@ export class LiveProtocolClient implements ProtocolClient {
     sink.state(run.closed ? 'closed' : 'idle');
 
     if (run.error || !exchange?.reply) {
-      throw new Error(run.error ?? 'Function A returned no reply from Function B');
+      const picked = run.processIdSource === 'random' ? ` (Function A had picked ProcessId ${run.processId})` : '';
+      throw new Error((run.error ?? 'Function A returned no reply from Function B') + picked);
     }
     return {
+      processId: run.processId,
       reply: exchange.reply.message ?? '',
       replyPayload: exchange.reply,
       closed: run.closed,

@@ -3,6 +3,7 @@
 import asyncio
 import json
 import logging
+import random
 from dataclasses import dataclass
 from typing import Awaitable, Callable
 
@@ -44,7 +45,7 @@ def _parse(req: func.HttpRequest) -> tuple[int, int, int, str | None, dict]:
     try:
         body = req.get_json()
     except ValueError:
-        raise ValueError("Request body must be JSON, e.g. {\"processId\": 3, \"exchangeNo\": 1}")
+        raise ValueError("Request body must be JSON, e.g. {\"exchangeNo\": 1} (processId optional: omitted = rand(0,15))")
     if not isinstance(body, dict):
         raise ValueError("Request body must be a JSON object")
 
@@ -54,7 +55,13 @@ def _parse(req: func.HttpRequest) -> tuple[int, int, int, str | None, dict]:
             raise ValueError(f"'{name}' must be an integer")
         return value
 
-    process_id = as_int("processId")
+    # No processId given -> Function A (the initiator) picks one: rand(0, 15).
+    if body.get("processId") is None:
+        process_id = random.randint(0, MAX_PROCESS_ID)
+        body["processIdSource"] = "random"
+    else:
+        process_id = as_int("processId")
+        body["processIdSource"] = "request"
     exchange_no = as_int("exchangeNo", 1)
     count = as_int("count", 1)
     if not 0 <= process_id <= MAX_PROCESS_ID:
@@ -113,6 +120,7 @@ async def handle(req: func.HttpRequest, protocol: str, table: str, driver: Drive
             "protocol": protocol,
             "table": table,
             "processId": process_id,
+            "processIdSource": body["processIdSource"],
             "exchanges": [
                 {
                     "exchangeNo": e.exchange_no,

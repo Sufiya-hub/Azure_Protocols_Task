@@ -112,4 +112,7 @@ Function A exposes (port 7071):
 | `POST /api/sse/run` | `{"processId":3,"exchangeNo":2,"count":1}` |
 | `POST /api/websocket/run` | `{"processId":3,"exchangeNo":2,"count":1}` |
 
+`processId` is optional: when it is left out, **Function A picks it with `rand(0,15)`** and sends that
+ProcessId to Function B in every message, so B always receives an explicit `processId`.
+
 The response lists every step on the wire. `"error"` explains any contract mismatch (HTTP 502).
