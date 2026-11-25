@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Protocol Flow</title>
+<style>
+  :root {
+    --a: #2563eb; --a-soft: #eff6ff; --a-line: #bfdbfe;
+    --b: #7c3aed; --b-soft: #f5f3ff; --b-line: #ddd6fe;
+    --ok: #047857; --ok-soft: #ecfdf5; --ok-line: #a7f3d0;
+    --muted: #64748b; --ink: #0f172a; --line: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f1f5f9; font-family: "Segoe UI", system-ui, sans-serif; color: var(--ink); }
+  .page { width: 1600px; padding: 36px 40px 40px; }
+  h1 { margin: 0; font-size: 30px; }
+  .sub { margin-top: 6px; color: var(--muted); font-size: 16px; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+  .warn { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; margin-top: 20px; box-shadow: 0 1px 2px rgb(0 0 0 / .04); }
+  .card h2 { margin: 0 0 14px; font-size: 19px; display: flex; align-items: center; gap: 10px; }
+  .num { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 14px; }
+  .row { display: grid; gap: 20px; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+
+  /* data table */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td, th { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .who { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 5px; color: #fff; font-weight: 700; font-size: 12px; }
+  .wa { background: var(--a); } .wb { background: var(--b); }
+  tr.hl td { background: #fefce8; font-weight: 600; }
+  .mono { font-family: Consolas, monospace; font-size: 13px; }
+
+  /* steps */
+  .steps { display: grid; grid-template-columns: repeat(9, 1fr); gap: 8px; }
+  .step { border-radius: 12px; padding: 10px 10px 12px; font-size: 13px; line-height: 1.35; border: 1px solid var(--line); background: #f8fafc; position: relative; }
+  .step b { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .step.a { background: var(--a-soft); border-color: var(--a-line); }
+  .step.b { background: var(--b-soft); border-color: var(--b-line); }
+  .step.p { background: var(--ok-soft); border-color: var(--ok-line); }
+  .step .tag { position: absolute; top: -9px; right: 8px; font-size: 10px; padding: 1px 6px; border-radius: 6px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+  .panel h3 { margin: 0; font-size: 17px; display: flex; align-items: center; gap: 10px; }
+  .panel .tbl { font-size: 12px; color: var(--muted); font-weight: 400; margin-left: auto; }
+  .stat { margin-top: 6px; font-size: 13px; padding: 8px 12px; border-radius: 10px; background: #f8fafc; border: 1px solid var(--line); }
+  .legend { display: flex; gap: 22px; flex-wrap: wrap; font-size: 13px; color: var(--muted); align-items: center; }
+  .legend i { display: inline-block; width: 30px; border-top: 3px solid; margin-right: 6px; vertical-align: middle; }
+  .note { font-size: 13px; color: #334155; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Function A ↔ Function B: Complete Communication Flow</h1>
+  <div class="sub">
+    Worked example: <b>ProcessId 3</b>, <b>exchange 2</b> (A sends message #2, B replies with message #3)
+    &nbsp;<span class="pill warn">Assumed rule: in exchange n, A sends index 2n−2 and B replies with 2n−1 (to be confirmed against the task)</span>
+  </div>
+
+  <!-- 1. Architecture -->
+  <div class="card">
+    <h2><span class="num">1</span>Components</h2>
+    <svg viewBox="0 0 1520 330" width="1520" height="330" font-family="Segoe UI, sans-serif">
+      <defs>
+        <marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/></marker>
+        <marker id="arB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/></marker>
+        <marker id="arG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+      </defs>
+      <!-- UI -->
+      <rect x="10" y="40" width="250" height="96" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="135" y="80" text-anchor="middle" font-size="18" font-weight="700">Angular UI</text>
+      <text x="135" y="104" text-anchor="middle" font-size="13" fill="#64748b">browser · localhost:4200</text>
+      <!-- Function A -->
+      <rect x="400" y="40" width="340" height="96" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+      <text x="570" y="78" text-anchor="middle" font-size="18" font-weight="700">⚡ Function A: Initiator</text>
+      <text x="570" y="104" text-anchor="middle" font-size="13" fill="#64748b">Azure Functions (Python) · port 7071</text>
+      <!-- Function B -->
+      <rect x="1160" y="40" width="340" height="96" rx="14" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="1330" y="78" text-anchor="middle" font-size="18" font-weight="700">⚡ Function B: Receiver</text>
+      <text x="1330" y="104" text-anchor="middle" font-size="13" fill="#64748b">Azure Functions (Python) · port 7072</text>
+      <!-- Azurite A -->
+      <rect x="400" y="215" width="340" height="105" rx="14" fill="#fff" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="570" y="248" text-anchor="middle" font-size="16" font-weight="700">🗄 Azurite A · 127.0.0.1:10002</text>
+      <text x="570" y="272" text-anchor="middle" font-size="13" fill="#64748b">data folder C:\azurite-data</text>
+      <text x="570" y="296" text-anchor="middle" font-size="13">Polling · SSE · WebSocket (16 rows each)</text>
+      <!-- Azurite B -->
+      <rect x="1160" y="215" width="340" height="105" rx="14" fill="#fff" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="1330" y="248" text-anchor="middle" font-size="16" font-weight="700">🗄 Azurite B · 127.0.0.1:20002</text>
+      <text x="1330" y="272" text-anchor="middle" font-size="13" fill="#64748b">data folder C:\azurite-data-b</text>
+      <text x="1330" y="296" text-anchor="middle" font-size="13">Polling · SSE · WebSocket (16 rows each)</text>
+      <!-- UI <-> A -->
+      <line x1="262" y1="74" x2="396" y2="74" stroke="#64748b" stroke-width="2" marker-end="url(#arG)"/>
+      <line x1="396" y1="104" x2="262" y2="104" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arG)"/>
+      <text x="329" y="64" text-anchor="middle" font-size="12" fill="#334155">start(protocol, processId)</text>
+      <text x="329" y="124" text-anchor="middle" font-size="12" fill="#334155">steps + result</text>
+      <!-- A <-> B -->
+      <line x1="742" y1="70" x2="1156" y2="70" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arA)"/>
+      <line x1="1156" y1="108" x2="742" y2="108" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="8 5" marker-end="url(#arB)"/>
+      <text x="950" y="60" text-anchor="middle" font-size="13" fill="#2563eb" font-weight="600">A → B: message {processId, index, text}</text>
+      <text x="950" y="128" text-anchor="middle" font-size="13" fill="#7c3aed" font-weight="600">B → A: reply {processId, index, text}</text>
+      <rect x="815" y="148" width="270" height="30" rx="15" fill="#0f172a"/>
+      <text x="950" y="168" text-anchor="middle" font-size="13" fill="#fff" font-weight="600">via Short Poll · Long Poll · SSE · WebSocket</text>
+      <!-- reads -->
+      <line x1="570" y1="138" x2="570" y2="211" stroke="#2563eb" stroke-width="2" marker-end="url(#arA)"/>
+      <text x="582" y="180" font-size="12" fill="#334155">reads row (RowKey="3"), json.loads()</text>
+      <line x1="1330" y1="138" x2="1330" y2="211" stroke="#7c3aed" stroke-width="2" marker-end="url(#arB)"/>
+      <text x="1318" y="180" text-anchor="end" font-size="12" fill="#334155">reads ITS OWN row 3, json.loads()</text>
+      <!-- note -->
+      <text x="10" y="190" font-size="13" fill="#64748b">Azurite only STORES data.</text>
+      <text x="10" y="210" font-size="13" fill="#64748b">Messages travel A ↔ B over the protocol,</text>
+      <text x="10" y="230" font-size="13" fill="#64748b">never through Azurite.</text>
+      <text x="10" y="262" font-size="13" fill="#334155"><tspan font-weight="700">Table per protocol:</tspan></text>
+      <text x="10" y="284" font-size="13" fill="#334155">Short / Long Polling → Polling</text>
+      <text x="10" y="304" font-size="13" fill="#334155">SSE → SSE · WebSocket → WebSocket</text>
+    </svg>
+  </div>
+
+  <div class="row cols-2">
+    <!-- 2. Data -->
+    <div class="card">
+      <h2><span class="num">2</span>The data: row ProcessId 3 (same row in Azurite A and B)</h2>
+      <div class="mono" style="margin-bottom:10px;color:#334155">PartitionKey=<b>PROCESSES</b> · RowKey=<b>"3"</b> · ProcessId=<b>3</b> · ConversationJson = <b>{"0": "...", ..., "15": "..."}</b></div>
+      <table>
+        <tr><th>Index</th><th>Speaker</th><th>Message (after json.loads)</th></tr>
+        <tr><td>0</td><td><span class="who wa">A</span></td><td>I need help planning tomorrow's journey.</td></tr>
+        <tr><td>1</td><td><span class="who wb">B</span></td><td>Which train leaves early in morning?</td></tr>
+        <tr class="hl"><td>2</td><td><span class="who wa">A</span></td><td>The express service has available seats. ← sent in this example</td></tr>
+        <tr class="hl"><td>3</td><td><span class="who wb">B</span></td><td>Please check the departure platform number. ← reply in this example</td></tr>
+        <tr><td>4</td><td><span class="who wa">A</span></td><td>The ticket details are ready now.</td></tr>
+        <tr><td>5</td><td><span class="who wb">B</span></td><td>I have another question about travel today.</td></tr>
+        <tr><td>6 – 13</td><td>A / B</td><td style="color:#64748b">… alternating …</td></tr>
+        <tr><td>14</td><td><span class="who wa">A</span></td><td>This conversation is complete; thank you for helping.</td></tr>
+        <tr><td>15</td><td><span class="who wb">B</span></td><td>Goodbye, the conversation is now officially closed.</td></tr>
+      </table>
+    </div>
+
+    <!-- 5. Closing + legend -->
+    <div class="card">
+      <h2><span class="num">5</span>Ending the conversation: exchange 8</h2>
+      <svg id="closing" width="100%"></svg>
+      <div class="note" style="margin-top:8px">
+        <b>SSE:</b> B sends a final <span class="mono">close</span> event and the stream ends.<br>
+        <b>WebSocket:</b> both sides exchange close frames.<br>
+        <b>Short / Long Polling:</b> nothing to close; there is no open connection.
+      </div>
+      <h2 style="margin-top:22px"><span class="num" style="background:#64748b">i</span>Legend</h2>
+      <div class="legend">
+        <span><i style="border-color:#2563eb"></i>A → B (sends data)</span>
+        <span><i style="border-color:#7c3aed;border-top-style:dashed"></i>B → A</span>
+        <span><i style="border-color:#94a3b8;border-top-style:dashed"></i>Empty poll (no data)</span>
+        <span><i style="border-color:#93c5fd"></i>Handshake / control</span>
+        <span style="color:#047857;font-weight:600">green text = reply data</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Common steps -->
+  <div class="card">
+    <h2><span class="num">3</span>The same 9 steps for every protocol</h2>
+    <div class="steps">
+      <div class="step"><b>① UI</b>Choose ProcessId 3, exchange 2 and a protocol, then press Run</div>
+      <div class="step"><b>② UI → A</b>Start request {processId: 3, exchangeNo: 2, protocol}</div>
+      <div class="step a"><b>③ A → Azurite A</b>Read row RowKey="3" from the protocol's table, json.loads()</div>
+      <div class="step a"><span class="tag">assumed rule</span><b>④ A</b>Pick index 2: "The express service has available seats."</div>
+      <div class="step p"><b>⑤ A → B</b>Send {processId: 3, index: 2, message} <u>via the protocol</u></div>
+      <div class="step b"><b>⑥ B → Azurite B</b>Read ITS OWN row RowKey="3", json.loads()</div>
+      <div class="step b"><span class="tag">assumed rule</span><b>⑦ B</b>Pick index 3: "Please check the departure platform number."</div>
+      <div class="step p"><b>⑧ B → A</b>Send {processId: 3, index: 3, reply} <u>via the protocol</u></div>
+      <div class="step"><b>⑨ A → UI</b>Flow diagram, live log, both JSON payloads</div>
+    </div>
+    <div class="note" style="margin-top:10px">Only steps <b>⑤</b> and <b>⑧</b> change between protocols, shown below.</div>
+  </div>
+
+  <!-- 4. Protocols -->
+  <div class="card">
+    <h2><span class="num">4</span>Steps ⑤ and ⑧ per protocol (ProcessId 3, exchange 2)</h2>
+    <div class="row cols-2">
+      <div class="panel"><h3>🔄 Short Polling <span class="tbl">table: Polling</span></h3><svg id="sp" width="100%"></svg>
+        <div class="stat">4 requests from A · <b>2 wasted</b> (204) · no connection stays open</div></div>
+      <div class="panel"><h3>⏱ Long Polling <span class="tbl">table: Polling</span></h3><svg id="lp" width="100%"></svg>
+        <div class="stat">2 requests from A · <b>0 wasted</b> · B holds the poll until the reply is ready</div></div>
+      <div class="panel"><h3>📡 Server-Sent Events (SSE) <span class="tbl">table: SSE</span></h3><svg id="sse" width="100%"></svg>
+        <div class="stat">One long-lived stream, <b>B → A only</b> · A still needs a separate POST to send</div></div>
+      <div class="panel"><h3>⇄ WebSocket <span class="tbl">table: WebSocket</span></h3><svg id="ws" width="100%"></svg>
+        <div class="stat">One handshake, then frames <b>both ways</b> on the same open connection</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MSG2 = '"The express service has available seats."';
+const MSG3 = '"Please check the departure platform number."';
+const COLORS = {
+  req:   { line: '#2563eb', dash: '',    label: '#1e3a8a', sub: '#334155' },
+  ctrlA: { line: '#93c5fd', dash: '',    label: '#1e40af', sub: '#64748b' },
+  res:   { line: '#7c3aed', dash: '8 5', label: '#4c1d95', sub: '#047857' },
+  push:  { line: '#7c3aed', dash: '8 5', label: '#4c1d95', sub: '#047857' },
+  ctrlB: { line: '#c4b5fd', dash: '8 5', label: '#5b21b6', sub: '#64748b' },
+  empty: { line: '#94a3b8', dash: '6 5', label: '#64748b', sub: '#94a3b8' },
+};
+let uid = 0;
+function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+function sequence(id, steps, width = 740) {
+  const svg = document.getElementById(id);
+  const xA = 75, xB = width - 75, mid = width / 2, rowH = 54, noteH = 40;
+  let y = 78, body = '';
+  const key = 'm' + (uid++);
+  const marker = (name, color) =>
+    `<marker id="${key}${name}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${color}"/></marker>`;
+  let defs = '';
+  const used = {};
+  for (const s of steps) {
+    if (s.note) {
+      body += `<rect x="${mid - 230}" y="${y - 8}" width="460" height="28" rx="8" fill="#fffbeb" stroke="#fde68a"/>
+               <text x="${mid}" y="${y + 11}" text-anchor="middle" font-size="12.5" fill="#92400e">${esc(s.note)}</text>`;
+      y += noteH; continue;
+    }
+    const kind = s.kind === 'ctrl' ? (s.from === 'A' ? 'ctrlA' : 'ctrlB') : s.kind;
+    const c = COLORS[kind];
+    if (!used[kind]) { defs += marker(kind, c.line); used[kind] = 1; }
+    const [x1, x2] = s.from === 'A' ? [xA + 2, xB - 4] : [xB - 2, xA + 4];
+    body += `<text x="${mid}" y="${y}" text-anchor="middle" font-size="13.5" font-weight="700" fill="${c.label}">${esc(s.label)}</text>`;
+    if (s.sub) body += `<text x="${mid}" y="${y + 16}" text-anchor="middle" font-size="12.5" fill="${c.sub}">${esc(s.sub)}</text>`;
+    const ly = y + (s.sub ? 26 : 12);
+    body += `<line x1="${x1}" y1="${ly}" x2="${x2}" y2="${ly}" stroke="${c.line}" stroke-width="2.4" ${c.dash ? `stroke-dasharray="${c.dash}"` : ''} marker-end="url(#${key}${kind})"/>`;
+    y += s.sub ? rowH : rowH - 14;
+  }
+  const h = y + 6;
+  const head = (x, name, fill, stroke) =>
+    `<rect x="${x - 62}" y="8" width="124" height="38" rx="10" fill="${fill}" stroke="${stroke}"/>
+     <text x="${x}" y="32" text-anchor="middle" font-size="14" font-weight="700">${name}</text>`;
+  svg.setAttribute('viewBox', `0 0 ${width} ${h}`);
+  svg.setAttribute('height', h);
+  svg.setAttribute('font-family', 'Segoe UI, sans-serif');
+  svg.innerHTML = `<defs>${defs}</defs>
+    <line x1="${xA}" y1="46" x2="${xA}" y2="${h}" stroke="#cbd5e1" stroke-width="2"/>
+    <line x1="${xB}" y1="46" x2="${xB}" y2="${h}" stroke="#cbd5e1" stroke-width="2"/>
+    ${head(xA, 'Function A', '#eff6ff', '#93c5fd')}${head(xB, 'Function B', '#f5f3ff', '#c4b5fd')}${body}`;
+}
+
+sequence('sp', [
+  { from: 'A', kind: 'req', label: 'POST /api/messages', sub: '{processId: 3, index: 2} ' + MSG2 },
+  { from: 'B', kind: 'ctrl', label: '202 Accepted', sub: 'stored, reply pending' },
+  { from: 'A', kind: 'req', label: 'GET /api/poll?processId=3   (poll #1)' },
+  { from: 'B', kind: 'empty', label: '204 No Content: not ready' },
+  { from: 'A', kind: 'req', label: 'GET /api/poll?processId=3   (poll #2)' },
+  { from: 'B', kind: 'empty', label: '204 No Content: not ready' },
+  { from: 'A', kind: 'req', label: 'GET /api/poll?processId=3   (poll #3)' },
+  { from: 'B', kind: 'res', label: '200 OK {index: 3}', sub: MSG3 },
+]);
+
+sequence('lp', [
+  { from: 'A', kind: 'req', label: 'POST /api/messages', sub: '{processId: 3, index: 2} ' + MSG2 },
+  { from: 'B', kind: 'ctrl', label: '202 Accepted', sub: 'stored, reply pending' },
+  { from: 'A', kind: 'req', label: 'GET /api/poll?processId=3&timeout=30', sub: 'B does NOT answer yet; the request is held open' },
+  { note: '⏳ B prepares the reply while A\'s request stays open' },
+  { from: 'B', kind: 'res', label: '200 OK {index: 3}  (held request answered)', sub: MSG3 },
+]);
+
+sequence('sse', [
+  { from: 'A', kind: 'ctrl', label: 'GET /api/stream?processId=3', sub: 'Accept: text/event-stream (opened ONCE)' },
+  { from: 'B', kind: 'ctrl', label: '200 OK · stream open', sub: 'stays open for every exchange' },
+  { from: 'A', kind: 'req', label: 'POST /api/messages  (SSE is one-way, so A POSTs)', sub: '{processId: 3, index: 2} ' + MSG2 },
+  { from: 'B', kind: 'ctrl', label: '202 Accepted' },
+  { from: 'B', kind: 'push', label: 'event: message  (pushed on the open stream)', sub: 'data: {index: 3} ' + MSG3 },
+  { note: 'next exchange: only a new POST + a new pushed event' },
+]);
+
+sequence('ws', [
+  { from: 'A', kind: 'ctrl', label: 'GET /api/ws  (Upgrade: websocket)', sub: 'handshake, ONCE' },
+  { from: 'B', kind: 'ctrl', label: '101 Switching Protocols', sub: 'full-duplex connection open' },
+  { from: 'A', kind: 'req', label: 'frame {processId: 3, index: 2}', sub: MSG2 },
+  { from: 'B', kind: 'res', label: 'frame {processId: 3, index: 3}', sub: MSG3 },
+  { from: 'A', kind: 'req', label: 'frame {index: 4}  (same connection)', sub: '"The ticket details are ready now."' },
+  { from: 'B', kind: 'res', label: 'frame {index: 5}', sub: '"I have another question about travel today."' },
+]);
+
+sequence('closing', [
+  { from: 'A', kind: 'req', label: 'index 14 (A)', sub: '"This conversation is complete; thank you for helping."' },
+  { from: 'B', kind: 'res', label: 'index 15 (B)', sub: '"Goodbye, the conversation is now officially closed."' },
+  { from: 'A', kind: 'ctrl', label: 'close  (SSE close event / WebSocket close frames)' },
+], 700);
+</script>
+</body>
+</html>

@@ -19,7 +19,7 @@ from azure.data.tables import TableServiceClient, UpdateMode
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 TABLES = ["Polling", "SSE", "WebSocket"]
-EXPECTED_ENTITIES = 15
+EXPECTED_ENTITIES = 16  # ProcessId 0..15
 EXPECTED_MESSAGES = 16  # message indexes "0".."15"
 
 
@@ -39,8 +39,8 @@ def load_and_validate(table_name: str) -> list[dict]:
             raise ValueError(f"{path.name}: ProcessId {pid} must have message indexes 0-15")
 
     ids = sorted(e["ProcessId"] for e in entities)
-    if ids != list(range(1, EXPECTED_ENTITIES + 1)):
-        raise ValueError(f"{path.name}: ProcessId values must be 1-15, got {ids}")
+    if ids != list(range(EXPECTED_ENTITIES)):
+        raise ValueError(f"{path.name}: ProcessId values must be 0-15, got {ids}")
     return entities
 
 

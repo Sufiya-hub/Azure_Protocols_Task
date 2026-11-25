@@ -1,0 +1,80 @@
+<div class="min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
+      <div class="flex items-center gap-4">
+        <div class="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-sm">
+          <app-icon name="bolt" cls="size-7" [stroke]="1.6" />
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 sm:text-2xl">Azure Functions: Communication Protocol Demo</h1>
+          <p class="mt-0.5 text-sm text-slate-600">
+            Function A ↔ Function B
+            <span class="mx-1.5 text-slate-300">|</span>
+            Short Polling · Long Polling · SSE · WebSocket
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Mode switch -->
+        <div class="inline-flex rounded-lg bg-slate-100 p-1" role="radiogroup" aria-label="Demo mode">
+          @for (m of modes; track m.id) {
+            <button type="button" role="radio" [attr.aria-checked]="store.mode() === m.id" [disabled]="store.running()"
+                    (click)="store.setMode(m.id)"
+                    class="rounded-md px-3 py-1.5 text-sm font-semibold transition disabled:cursor-not-allowed"
+                    [class]="store.mode() === m.id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'">
+              {{ m.label }}
+            </button>
+          }
+        </div>
+
+        <!-- Status -->
+        @if (store.mode() === 'simulation') {
+          <span class="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3.5 py-1.5 text-sm font-semibold text-amber-800 ring-1 ring-amber-200"
+                title="In-browser simulation. Function A, Function B and Azurite are not used.">
+            <span class="size-2 rounded-full bg-amber-500"></span>
+            Simulation · backend not used
+          </span>
+        } @else {
+          @let h = store.health();
+          <span class="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-semibold ring-1"
+                [class]="h.checking ? 'bg-slate-50 text-slate-600 ring-slate-200'
+                  : h.functionA && h.azuriteA ? 'bg-emerald-50 text-emerald-800 ring-emerald-200'
+                  : 'bg-red-50 text-red-700 ring-red-200'">
+            <span class="size-2 rounded-full"
+                  [class]="h.checking ? 'animate-pulse bg-slate-400' : h.functionA && h.azuriteA ? 'bg-emerald-500' : 'bg-red-500'"></span>
+            Live · {{ h.message }}
+          </span>
+          <button type="button" class="btn btn-secondary px-2.5 py-1.5" title="Check Function A again"
+                  [disabled]="h.checking" (click)="store.checkHealth()">
+            <app-icon name="refresh" cls="size-4" />
+            <span class="sr-only">Check Function A again</span>
+          </button>
+        }
+      </div>
+    </div>
+  </header>
+
+  <!-- Main grid -->
+  <main class="mx-auto grid max-w-[1560px] gap-4 px-4 py-5 sm:px-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_400px]">
+    <app-config-panel />
+    <app-flow-diagram />
+    <app-live-log class="lg:col-span-2 xl:col-span-1" />
+  </main>
+
+  <!-- Payloads, how it works, comparison -->
+  <section class="mx-auto flex max-w-[1560px] flex-col gap-4 px-4 pb-8 sm:px-6">
+    <app-payload-viewer />
+    <div class="card flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:gap-5">
+      <div class="flex shrink-0 items-center gap-2">
+        <span class="text-sm font-semibold text-slate-700">Protocol:</span>
+        <span class="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white">{{ store.info().label }}</span>
+      </div>
+      <div class="hidden h-8 w-px bg-slate-200 sm:block"></div>
+      <p class="text-sm text-slate-700"><span class="font-semibold text-slate-900">How it works:</span> {{ store.info().howItWorks }}</p>
+    </div>
+
+    <app-comparison-table />
+  </section>
+</div>
